@@ -2,7 +2,7 @@ import express from 'express'
 import type { Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import 'dotenv/config'
-import routes from './routes/index.js'
+import routes from './routes/index'
 
 const app = express()
 app.use(cors())

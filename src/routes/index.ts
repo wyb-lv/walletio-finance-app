@@ -1,7 +1,7 @@
 import { Router } from 'express'
+import authRoutes from './auth.routes'
 
 const router = Router()
-
-// TODO: mount feature routers here, e.g. router.use('/wallets', walletsRouter)
+router.use('/auth', authRoutes)
 
 export default router
