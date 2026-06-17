@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express'
+import type { AuthedRequest } from '../middlewares/auth'
 import { authService } from '../services/auth.service'
 
 export const authController = {
@@ -9,5 +10,18 @@ export const authController = {
   async login(req: Request, res: Response) {
     const { email, password } = req.body
     res.json(await authService.login(email, password))
+  },
+  async changePassword(req: AuthedRequest, res: Response) {
+    const { oldPassword, newPassword } = req.body
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ message: 'oldPassword and newPassword are required' })
+    }
+    if (typeof newPassword !== 'string' || newPassword.length < 6) {
+      return res.status(400).json({ message: 'newPassword must be at least 6 characters' })
+    }
+    if (oldPassword === newPassword) {
+      return res.status(400).json({ message: 'newPassword must be different from oldPassword' })
+    }
+    res.json(await authService.changePassword(req.accessToken!, oldPassword, newPassword))
   },
 }

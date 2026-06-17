@@ -13,3 +13,8 @@ export const supabaseForUser = (accessToken: string) =>
     global: { headers: { Authorization: `Bearer ${accessToken}` } },
     auth: { persistSession: false }
   })
+
+// A throwaway client with no shared session, for flows that sign in transiently
+// (e.g. verifying a user's current password) without touching the singleton client.
+export const supabaseFresh = () =>
+  createClient(url, anon, { auth: { persistSession: false } })

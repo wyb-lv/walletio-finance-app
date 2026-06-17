@@ -3,10 +3,12 @@ import type { Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import 'dotenv/config'
 import routes from './routes/index'
+import { setupSwagger } from './config/swagger';
 
 const app = express()
 app.use(cors())
 app.use(express.json())
+setupSwagger(app)
 
 app.get('/health', (_, res) => res.json({ ok: true }))
 app.use('/api', routes)
