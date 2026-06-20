@@ -13,19 +13,6 @@ async function getCategories(accessToken: string, userId: string) {
     return data
 }
 
-async function getCategoryById(accessToken: string, userId: string, id: string) {
-    const db = supabaseForUser(accessToken)
-    const { data, error } = await db
-        .from('categories')
-        .select('id, user_id, spending_group_id, name, icon, color')
-        .eq('id', id)
-        .eq('user_id', userId)
-        .maybeSingle()
-    if (error) throw new Error(error.message)
-    if (!data) throw new HttpError(404, 'Category not found')
-    return data
-}
-
 async function createCategory(accessToken: string, userId: string, input: CreateCategoryInput) {
     const db = supabaseForUser(accessToken)
     const { data, error } = await db
@@ -79,7 +66,6 @@ async function deleteCategory(accessToken: string, userId: string, id: string) {
 
 export const categoryService = {
     getCategories,
-    getCategoryById,
     createCategory,
     updateCategory,
     deleteCategory,

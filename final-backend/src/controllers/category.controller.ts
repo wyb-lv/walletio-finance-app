@@ -6,14 +6,6 @@ export const categoryController = {
     async getCategories(req: AuthedRequest, res: Response) {
         res.json(await categoryService.getCategories(req.accessToken!, req.userId!))
     },
-    async getCategoryById(req: AuthedRequest, res: Response) {
-        const id = req.params.id
-        if (typeof id !== 'string') {
-            return res.status(400).json({ message: 'Category id is required' })
-        }
-        const data = await categoryService.getCategoryById(req.accessToken!, req.userId!, id)
-        res.json(data)
-    },
     async createCategory(req: AuthedRequest, res: Response) {
         const { name, spending_group_id, icon, color } = req.body
         if (!name) {

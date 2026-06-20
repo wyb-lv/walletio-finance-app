@@ -32,19 +32,6 @@ async function getWalletSummary(accessToken: string, userId: string) {
     return summary
 }
 
-async function getWalletById(accessToken: string, userId: string, id: string) {
-    const db = supabaseForUser(accessToken)
-    const { data, error } = await db
-        .from('wallet_balances')
-        .select('*')
-        .eq('wallet_id', id)
-        .eq('user_id', userId)
-        .maybeSingle()
-    if (error) throw new Error(error.message)
-    if (!data) throw new HttpError(404, 'Wallet not found')
-    return data
-}
-
 async function createWallet(accessToken: string, userId: string, input: CreateWalletInput) {
     const db = supabaseForUser(accessToken)
     const { data, error } = await db
@@ -97,7 +84,6 @@ async function deleteWallet(accessToken: string, userId: string, id: string) {
 export const walletService = {
     getWallets,
     getWalletSummary,
-    getWalletById,
     createWallet,
     updateWallet,
     deleteWallet,

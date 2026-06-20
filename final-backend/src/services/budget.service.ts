@@ -5,9 +5,6 @@ async function getBudget(accessToken: string, userId: string) {
     const db = supabaseForUser(accessToken)
     const { data, error } = await db.from('budgets').select('id, name, total_income, month, year, created_at').eq('user_id', userId)
     if (error) throw new Error(error.message)
-
-    // Total money in a budget equals the sum of the payment ("ví thanh toán")
-    // wallet balances. Tracking wallets (e.g. savings) are excluded.
     const { payment } = await walletService.getWalletSummary(accessToken, userId)
     return (data ?? []).map((budget) => ({ ...budget, total_income: payment }))
 }
@@ -115,21 +112,10 @@ async function upsertAllocation(accessToken: string, budgetId: string, categoryI
     return data
 }
 
-async function deleteAllocation(accessToken: string, id: string) {
-    const db = supabaseForUser(accessToken)
-    const { error } = await db
-        .from('budget_allocations')
-        .delete()
-        .eq('id', id)
-    if (error) throw new Error(error.message)
-    return { message: 'Allocation deleted' }
-}
-
 export const budgetService = {
     getBudget,
     createBudget,
     getAllocations,
     updateBudget,
     upsertAllocation,
-    deleteAllocation,
 }

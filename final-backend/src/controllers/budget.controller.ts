@@ -29,13 +29,5 @@ export const budgetController = {
         }
         const data = await budgetService.upsertAllocation(req.accessToken!, budgetId, categoryId, amount, categoryName, budgetName)
         res.json({ message: 'Allocation saved', data })
-    },
-    async deleteAllocation(req: AuthedRequest, res: Response) {
-        const id = req.params.id
-        if (typeof id !== 'string') {
-            return res.status(400).json({ message: 'Allocation id is required' })
-        }
-        const data = await budgetService.deleteAllocation(req.accessToken!, id)
-        res.json(data)
     }
 }

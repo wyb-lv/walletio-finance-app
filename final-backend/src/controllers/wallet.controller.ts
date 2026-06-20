@@ -9,13 +9,6 @@ export const walletController = {
     async getWalletSummary(req: AuthedRequest, res: Response) {
         res.json(await walletService.getWalletSummary(req.accessToken!, req.userId!))
     },
-    async getWalletById(req: AuthedRequest, res: Response) {
-        const id = req.params.id
-        if (typeof id !== 'string') {
-            return res.status(400).json({ message: 'Wallet id is required' })
-        }
-        res.json(await walletService.getWalletById(req.accessToken!, req.userId!, id))
-    },
     async createWallet(req: AuthedRequest, res: Response) {
         const { name, type, opening_balance } = req.body
         if (!name || !type) {

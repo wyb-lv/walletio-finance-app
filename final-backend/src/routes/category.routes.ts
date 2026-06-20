@@ -41,48 +41,6 @@ router.get('/', requireAuth, asyncHandler(categoryController.getCategories))
 
 /**
  * @openapi
- * /categories/{id}:
- *   get:
- *     tags: [Category]
- *     summary: Get a single category by id
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *           format: uuid
- *         description: Category id
- *     responses:
- *       200:
- *         description: Category details
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   format: uuid
- *                 user_id:
- *                   type: string
- *                   format: uuid
- *                 name:
- *                   type: string
- *                 icon:
- *                   type: string
- *                   nullable: true
- *       401:
- *         description: Missing or invalid token
- *       400:
- *         description: Category not found
- */
-router.get('/:id', requireAuth, asyncHandler(categoryController.getCategoryById))
-
-/**
- * @openapi
  * /categories:
  *   post:
  *     tags: [Category]

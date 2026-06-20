@@ -3,3 +3,6 @@ dist/
 .env
 *.log
 db.sql
+hinh_code
+bao-cao-walletio.md
+dac-ta-use-case.md

@@ -17,15 +17,12 @@ async function getSummary(accessToken: string, userId: string, year: number) {
         .lt('expense_date', end)
     if (error) throw new Error(error.message)
 
-    // Khởi tạo sẵn 12 tháng với income/expense = 0 để tháng không có giao dịch vẫn trả về 0
-    // (đảm bảo biểu đồ luôn đủ 12 cột, không bị khuyết tháng).
     const months = Array.from({ length: 12 }, (_, i) => ({
         month: monthKey(i, year),
         income: 0,
         expense: 0,
     }))
-    // Duyệt từng giao dịch -> lấy chỉ số tháng từ ký tự 6-7 của ngày (YYYY-MM-DD), trừ 1 về 0-based,
-    // rồi cộng dồn vào income (thu) hoặc expense (chi) đúng tháng.
+
     for (const row of (data ?? []) as any[]) {
         const m = Number(String(row.expense_date).slice(5, 7)) - 1
         if (m < 0 || m > 11) continue
@@ -54,8 +51,6 @@ async function getOverview(
     const { data, error } = await query
     if (error) throw new Error(error.message)
 
-    // Gom tổng tiền theo từng danh mục bằng Map (key = category_id, hoặc 'uncategorized' nếu null).
-    // Đồng thời cộng `total` toàn bộ để lát nữa tính % cho biểu đồ donut.
     const map = new Map<string, { category_id: string | null; category_name: string; total: number }>()
     let total = 0
     for (const row of (data ?? []) as any[]) {
@@ -63,13 +58,10 @@ async function getOverview(
         const name = row.categories?.name ?? 'Uncategorized'
         const amount = Number(row.amount) || 0
         total += amount
-        // Lấy bản ghi đang gom của danh mục này, chưa có thì tạo mới rồi cộng dồn.
         const current = map.get(key) ?? { category_id: row.category_id ?? null, category_name: name, total: 0 }
         current.total += amount
         map.set(key, current)
     }
-    // Tính % mỗi danh mục so với tổng (làm tròn 2 chữ số) và sắp xếp giảm dần để donut hiển thị đẹp.
-    // Lưu ý chia cho 0: nếu total = 0 thì percentage = 0 thay vì NaN.
     const categories = [...map.values()]
         .map((c) => ({ ...c, percentage: total ? Math.round((c.total / total) * 10000) / 100 : 0 }))
         .sort((a, b) => b.total - a.total)
@@ -85,7 +77,6 @@ async function getBalanceTimeline(accessToken: string, userId: string) {
         .select('opening_balance')
         .eq('user_id', userId)
     if (walletsError) throw new Error(walletsError.message)
-    // B1: số dư khởi điểm của đường biểu đồ = tổng opening_balance tất cả ví.
     const openingBalance = ((wallets ?? []) as any[]).reduce((sum, w) => sum + (Number(w.opening_balance) || 0), 0)
 
     const { data, error } = await db
@@ -95,7 +86,6 @@ async function getBalanceTimeline(accessToken: string, userId: string) {
         .order('expense_date', { ascending: true })
     if (error) throw new Error(error.message)
 
-    // B2: gom thay đổi ròng (delta) theo từng tháng: thu (+amount), chi (-amount).
     const monthly = new Map<string, number>()
     for (const row of (data ?? []) as any[]) {
         const month = String(row.expense_date).slice(0, 7)
@@ -104,8 +94,6 @@ async function getBalanceTimeline(accessToken: string, userId: string) {
         monthly.set(month, (monthly.get(month) ?? 0) + delta)
     }
 
-    // B3: cộng dồn lũy kế (running total) theo thứ tự tháng tăng dần để ra số dư cuối mỗi tháng.
-    // running giữ giá trị qua các vòng lặp -> mỗi điểm = số dư tích luỹ tới hết tháng đó.
     let running = openingBalance
     const points = [...monthly.keys()].sort().map((month) => {
         running += monthly.get(month)!

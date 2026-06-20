@@ -125,51 +125,6 @@ router.post('/', requireAuth, asyncHandler(walletController.createWallet))
 /**
  * @openapi
  * /wallets/{id}:
- *   get:
- *     tags: [Wallet]
- *     summary: Get a single wallet by id
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *           format: uuid
- *         description: Wallet id
- *     responses:
- *       200:
- *         description: Wallet details with live balance
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 wallet_id:
- *                   type: string
- *                   format: uuid
- *                 name:
- *                   type: string
- *                 type:
- *                   type: string
- *                   enum: [payment, tracking]
- *                 opening_balance:
- *                   type: integer
- *                   format: int64
- *                 balance:
- *                   type: integer
- *                   format: int64
- *       400:
- *         description: Wallet not found
- *       401:
- *         description: Missing or invalid token
- */
-router.get('/:id', requireAuth, asyncHandler(walletController.getWalletById))
-
-/**
- * @openapi
- * /wallets/{id}:
  *   patch:
  *     tags: [Wallet]
  *     summary: Update a wallet
