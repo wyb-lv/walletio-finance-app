@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "Walletio",
+    "slug": "walletio",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "primaryColor": "#1A9E6E",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#1A9E6E"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1A9E6E"
+      },
+      "package": "com.zhugeb1ao.walletio"
+    },
+    "web": {},
+    "plugins": [
+      "expo-font",
+      "expo-secure-store",
+      "expo-asset",
+      "expo-image-picker",
+      "@react-native-community/datetimepicker"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "469e5e48-c186-4921-8cca-5e68b8da9446"
+      }
+    }
+  }
+}
